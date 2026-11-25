@@ -14,7 +14,7 @@ export default async function ClientsPage() {
   if (!canEditProperties(user)) redirect("/");
   const c = schema.clients;
   const rows = await db
-    .select({ c, properties: sql<number>`(select count(*)::int from properties p where p.client_id = ${c.id})` })
+    .select({ c, properties: sql<number>`(select count(*)::int from properties p where p.client_id = clients.id)` })
     .from(c)
     .where(eq(c.orgId, user.orgId))
     .orderBy(asc(c.name));

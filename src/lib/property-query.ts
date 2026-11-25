@@ -44,9 +44,9 @@ export async function listProperties(user: CurrentUser, f: PropertyFilters) {
 
   const lastInspection = sql<Date | null>`(
     select max(coalesce(i.completed_at, i.scheduled_at)) from inspections i
-    where i.property_id = ${p.id} and i.status in ('completed','closed')
+    where i.property_id = properties.id and i.status in ('completed','closed')
   )`;
-  const unitCount = sql<number>`(select count(*)::int from properties c where c.parent_id = ${p.id} and c.archived = false)`;
+  const unitCount = sql<number>`(select count(*)::int from properties c where c.parent_id = properties.id and c.archived = false)`;
 
   const order =
     f.sort === "last_inspected"
@@ -61,7 +61,7 @@ export async function listProperties(user: CurrentUser, f: PropertyFilters) {
     .select({
       property: p,
       clientName: schema.clients.name,
-      parentAddress: sql<string | null>`(select pp.address_line1 from properties pp where pp.id = ${p.parentId})`,
+      parentAddress: sql<string | null>`(select pp.address_line1 from properties pp where pp.id = properties.parent_id)`,
       lastInspection,
       unitCount,
     })

@@ -16,8 +16,8 @@ export default async function TemplatesPage() {
   const rows = await db
     .select({
       t,
-      sections: sql<number>`(select count(*)::int from template_sections s where s.template_id = ${t.id})`,
-      items: sql<number>`(select count(*)::int from template_items i join template_sections s on s.id = i.section_id where s.template_id = ${t.id})`,
+      sections: sql<number>`(select count(*)::int from template_sections s where s.template_id = templates.id)`,
+      items: sql<number>`(select count(*)::int from template_items i join template_sections s on s.id = i.section_id where s.template_id = templates.id)`,
     })
     .from(t)
     .where(eq(t.orgId, user.orgId))
