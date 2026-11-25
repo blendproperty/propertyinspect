@@ -5,7 +5,8 @@ import { db, schema } from "@/db";
 import { requireUser } from "@/lib/auth";
 import { canEditProperties, canInspect } from "@/lib/permissions";
 import { PageHeader } from "@/components/page-header";
-import { createTemplate } from "./actions";
+import { STARTER_TEMPLATES } from "@/lib/starter-templates";
+import { addStarterTemplates, createTemplate } from "./actions";
 
 export const metadata = { title: "Templates" };
 
@@ -22,9 +23,19 @@ export default async function TemplatesPage() {
     .from(t)
     .where(eq(t.orgId, user.orgId))
     .orderBy(asc(t.name));
+  const have = new Set(rows.map((r) => r.t.name));
+  const missing = STARTER_TEMPLATES.filter((d) => !have.has(d.name));
   return (
     <>
       <PageHeader title="Templates" subtitle="Rooms and items copied into each new inspection. Changing a template doesn't change past inspections." />
+      {canEditProperties(user) && missing.length > 0 && (
+        <form action={addStarterTemplates} className="card mb-4 flex flex-wrap items-center justify-between gap-3 p-4">
+          <p className="text-sm text-stone-600">
+            {missing.length} ready-made {missing.length === 1 ? "template is" : "templates are"} available: {missing.map((d) => d.name).join(", ")}.
+          </p>
+          <button className="btn-secondary">Add {missing.length === 1 ? "it" : "them"}</button>
+        </form>
+      )}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {rows.map(({ t, sections, items }) => (
           <Link key={t.id} href={`/templates/${t.id}`} className="card block p-5 hover:border-brand-500">

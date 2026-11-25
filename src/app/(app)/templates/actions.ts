@@ -7,6 +7,7 @@ import { db, schema } from "@/db";
 import { requireUser } from "@/lib/auth";
 import { canEditProperties } from "@/lib/permissions";
 import { isUuid, str } from "@/lib/format";
+import { seedStarterTemplates } from "@/lib/starter-templates";
 
 async function editor() {
   const user = await requireUser();
@@ -144,4 +145,10 @@ export async function removeTemplateItem(fd: FormData) {
   const s = await ownSection(user.orgId, item.sectionId);
   await db.delete(schema.templateItems).where(eq(schema.templateItems.id, id));
   revalidatePath(`/templates/${s.templateId}`);
+}
+
+export async function addStarterTemplates() {
+  const user = await editor();
+  await db.transaction((tx) => seedStarterTemplates(tx, user.orgId));
+  revalidatePath("/templates");
 }
