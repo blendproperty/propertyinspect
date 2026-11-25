@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --color-brand-50: #edf4f1;
+  --color-brand-100: #d5e8e0;
+  --color-brand-300: #9bd4c0;
+  --color-brand-500: #2a8a7a;
+  --color-brand-600: #176f62;
+  --color-brand-700: #125a50;
+  --color-brand-800: #29534f;
+  --color-brand-900: #112f30;
+  --color-ink: #1a302e;
+}
+
+body {
+  background: #f3f6f5;
+  color: var(--color-ink);
+}
+
+@utility input {
+  @apply block w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm shadow-xs outline-none placeholder:text-stone-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-100;
+}
+@utility label {
+  @apply mb-1 block text-xs font-medium tracking-wide text-stone-600 uppercase;
+}
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg px-3.5 py-2 text-sm font-medium transition-colors disabled:opacity-50;
+}
+@utility btn-primary {
+  @apply btn bg-brand-600 text-white hover:bg-brand-700;
+}
+@utility btn-secondary {
+  @apply btn border border-stone-300 bg-white text-ink hover:bg-stone-50;
+}
+@utility btn-danger {
+  @apply btn border border-rose-200 bg-white text-rose-700 hover:bg-rose-50;
+}
+@utility card {
+  @apply rounded-xl border border-stone-200 bg-white shadow-xs;
+}
+@utility table-wrap {
+  @apply card overflow-x-auto;
+  & table {
+    @apply w-full text-left text-sm;
+  }
+  & th {
+    @apply border-b border-stone-200 bg-stone-50 px-4 py-2.5 text-xs font-semibold tracking-wide whitespace-nowrap text-stone-500 uppercase;
+  }
+  & td {
+    @apply border-b border-stone-100 px-4 py-3 align-top;
+  }
+  & tr:last-child td {
+    @apply border-b-0;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+  }
+}

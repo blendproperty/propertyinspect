@@ -1,0 +1,36 @@
+# Runs Blend Inspect and PostgreSQL on one VPS.
+#   1. cp .env.production.example .env.production  (and fill it in)
+#   2. docker compose --env-file .env.production up -d --build
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: blend
+      POSTGRES_USER: blend
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U blend -d blend"]
+      interval: 5s
+      retries: 10
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://blend:${POSTGRES_PASSWORD}@db:5432/blend
+      COOKIE_SECURE: ${COOKIE_SECURE:-true}
+    volumes:
+      - uploads:/data/uploads
+    # Only reachable from the VPS itself; put Caddy or Nginx in front for HTTPS.
+    ports:
+      - "127.0.0.1:3000:3000"
+
+volumes:
+  db-data:
+  uploads:
