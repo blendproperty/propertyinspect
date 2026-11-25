@@ -23,6 +23,21 @@ npm run dev                   # http://localhost:3000
 Open `/signup` to create the first administrator. Sign-up closes after that; invite everyone else from **People**.
 Optional made-up demo data: `npm run seed:demo`.
 
+## Quick preview on the VPS (no domain needed)
+
+In Hostinger's hPanel, open the VPS and use **Browser terminal**, then paste:
+
+```bash
+command -v docker >/dev/null || curl -fsSL https://get.docker.com | sh
+git clone -b inspections-mvp https://github.com/blendproperty/propertyinspect.git
+cd propertyinspect
+printf "POSTGRES_PASSWORD=%s\nAPP_BIND=3000\nCOOKIE_SECURE=false\n" "$(openssl rand -hex 24)" > .env.production
+docker compose --env-file .env.production up -d --build
+```
+
+After a few minutes open `http://<your-vps-ip>:3000/signup` and create the admin account.
+This is plain HTTP, so use it only for a look around, then switch to the HTTPS setup below.
+
 ## Deploy on the Hostinger VPS (Docker)
 
 1. Install Docker on the VPS (Hostinger's Ubuntu + Docker template works, or `curl -fsSL https://get.docker.com | sh`).

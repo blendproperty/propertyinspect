@@ -27,9 +27,10 @@ services:
       COOKIE_SECURE: ${COOKIE_SECURE:-true}
     volumes:
       - uploads:/data/uploads
-    # Only reachable from the VPS itself; put Caddy or Nginx in front for HTTPS.
+    # By default only reachable from the VPS itself (put Caddy in front for HTTPS).
+    # For a quick preview on http://<vps-ip>:3000 set APP_BIND=3000 and COOKIE_SECURE=false.
     ports:
-      - "127.0.0.1:3000:3000"
+      - "${APP_BIND:-127.0.0.1:3000}:3000"
 
 volumes:
   db-data:
